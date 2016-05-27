@@ -5,24 +5,24 @@
 	<title>Cat Clicker</title>
 	<script src="/bower_components/jquery/dist/jquery.js"></script>
 	<script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
-	<script src="scripts/numberOfClicks.js"></script>
+	<!-- <script src="scripts/app.js"></script> -->
 	<link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
 	<div class="container-fluid">
 		<div class="row">
-			<div name="catList" class="col-xs-12 col-sm-4">
-			<h1>Cat List:</h1>
-				<ul name="catList">
-					
+			<div class="catListView col-xs-12 col-sm-4">
+				<!-- every cat is listed here -->
+				<h1>Cat List:</h1>
+				<ul class="catList">
 				</ul>
 			</div>
-			<div name="catDisplay" class="col-xs-12 col-sm-8">
+			<div class="catInfoView col-xs-12 col-sm-8">
 				<!-- image, name and number of clicks -->
 				
 			</div>
 		</div>	
 	</div>
-	
+	<script src="scripts/app.js"></script>
 </body>
 </html>

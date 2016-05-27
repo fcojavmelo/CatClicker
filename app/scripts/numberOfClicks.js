@@ -24,12 +24,12 @@ $(document).ready(function(){
 				new Cat('Mark'),
 				new Cat('Tony') ];
 
-	var clicker = function (cat, numbclickstag){
-		console.log(cat.name + ' Image clicked');
-		cat.numbClicks++;
-		// console.log(cat.numbClicks);
-		$(numbclickstag).html('Number of Clicks = ' + cat.numbClicks);
-	};
+	// var clicker = function (cat, numbclickstag){
+	// 	console.log(cat.name + ' Image clicked');
+	// 	cat.numbClicks++;
+	// 	// console.log(cat.numbClicks);
+	// 	$(numbclickstag).html('Number of Clicks = ' + cat.numbClicks);
+	// };
 
 	//loop to add the cats to the list, and attach and event trigger to display the cat view when a cat's name is clicked
 	$.each(cats, function(i, cat) {
