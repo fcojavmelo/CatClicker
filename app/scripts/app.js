@@ -18,6 +18,7 @@ class Cat {
 var model = {
 	//declaring cats array for storage
 	cats: new Array(),
+	currentCat: Cat,
 	// filling up the arrray
 	init: function() {
 			this.cats.push( new Cat('Thom'),
@@ -25,17 +26,9 @@ var model = {
 							new Cat('John'),
 							new Cat('Mark'),
 							new Cat('Tony') );
+			this.currentCat = this.cats[0];
 			console.log(this.cats);
-			},
-	getAllCats: function() {
-		return this.cats;
-	},
-	getFirstCat: function() {
-		return this.cats[0];
-	},
-	getCat: function(cat) {
-		return;
-	}
+			}
 };
 
 // octopus
@@ -45,18 +38,20 @@ var octopus = {
 		viewCatList.init();
 		viewCat.init();
 	},
-	getCats: function() {
-		return model.getAllCats();
+	getAllCats: function() {
+		return model.cats;
 	},
-	getFirstCat: function() {
-		return model.getFirstCat();
+	getCurrentCat: function() {
+		return model.currentCat;
 	},
-	catSelected: function(cat) {
+	setCurrentCat: function(cat) {
 		// console.log('catClicked called' + cat.name);
-		viewCat.render(cat);
+		model.currentCat = cat;
+		viewCat.render();
 	},
-	catClicked: function() {
-
+	incrementCounter: function() {
+		model.currentCat.clicks++;
+		viewCat.renderCounterOnly();
 	}
 };
 
@@ -64,15 +59,24 @@ var octopus = {
 var viewCatList = {
 	init: function() {
 		this.catList = $('.catList');
-		viewCatList.render();
+		this.catListArray = this.catList.children();
+		this.render();
 	},
 	render: function() {
-		octopus.getCats().forEach(function(cat) {
+		octopus.getAllCats().forEach(function(cat) {
 			var li = d.createElement('li');
 			$(li).html(cat.name);
-			$(li).click(function() {
-				octopus.catSelected(cat);
-			});
+			$(li).attr('style', 'cursor: pointer');
+			// $(li).addClass('active');
+			$(li).click((function(catCopy){
+				return function(){
+					octopus.setCurrentCat(catCopy);
+					if(this.catListArray.hasClass('active')){
+						this.catListArray.removeClass('active');
+					}
+					$(li).addClass('active');
+				};
+			})(cat));
 			$(li).appendTo(viewCatList.catList);
 		});
 	}
@@ -81,18 +85,25 @@ var viewCatList = {
 // cat View
 var viewCat = {
 	init: function() {
-		this.catInfo = $('.catInfoView');
-		var cat = octopus.getFirstCat();
-		viewCat.render(cat);
-	},
-	render: function(cat) {
-		// console.log('viewCat.render() called');
-		var html = '<h1>' + cat.name + '</h1><img src="' + cat.img + '" class="img-responsive" alt="img"><h2>Number of clicks: ' + cat.clicks + '</h2>';
-		this.catInfo.html(html);
-		$('.catInfoView').children('img').click(function() {
-			cat.clicks++;
-			viewCat.render(cat);
+		this.catImg = $('.catImg');
+		this.catName = $('.catName');
+		this.numClicks = $('.numClicks');
+		this.catImg.click(function(){
+			octopus.incrementCounter();
 		});
+		this.render();
+	},
+	render: function() {
+		console.log('viewCat.render() called');
+		// var html = '<h1>' + cat.name + '</h1><img src="' + cat.img + '" class="img-responsive" alt="img"><h2>Number of clicks: ' + cat.clicks + '</h2>';
+		var cat = octopus.getCurrentCat();
+		this.catImg.attr('src', cat.img);
+		this.catName.html(cat.name);
+		this.numClicks.html('Number of clicks = ' + cat.clicks);
+	},
+	renderCounterOnly: function(){
+		var cat = octopus.getCurrentCat();
+		this.numClicks.html('Number of clicks = ' + cat.clicks);
 	}
 };
 
