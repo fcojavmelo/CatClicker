@@ -17,6 +17,7 @@ class Cat {
 // model
 var model = {
 	//declaring cats array for storage
+	admin: false,
 	cats: new Array(),
 	currentCat: Cat,
 	// filling up the arrray
@@ -37,6 +38,7 @@ var octopus = {
 		model.init();
 		viewCatList.init();
 		viewCat.init();
+		viewAdmin.init();
 	},
 	getAllCats: function() {
 		return model.cats;
@@ -48,10 +50,26 @@ var octopus = {
 		// console.log('catClicked called' + cat.name);
 		model.currentCat = cat;
 		viewCat.render();
+		viewAdmin.render();
 	},
 	incrementCounter: function() {
 		model.currentCat.clicks++;
 		viewCat.renderCounterOnly();
+		viewAdmin.render();
+	},
+	isAdmin: function() {
+		return model.admin;
+	},
+	setAdmin: function(val) {
+		model.admin = val;
+	},
+	updateCat: function(data){
+		data.forEach(function(input, i) {
+			// console.log('Data: ' + index + ' Value: ' + value);
+			model.currentCat[input.name] = input.value;
+			viewCatList.render();
+			viewCat.render();
+		});
 	}
 };
 
@@ -63,6 +81,7 @@ var viewCatList = {
 		this.render();
 	},
 	render: function() {
+		viewCatList.catList.html('');
 		octopus.getAllCats().forEach(function(cat) {
 			var li = d.createElement('li');
 			$(li).html(cat.name);
@@ -71,10 +90,10 @@ var viewCatList = {
 			$(li).click((function(catCopy){
 				return function(){
 					octopus.setCurrentCat(catCopy);
-					if(this.catListArray.hasClass('active')){
-						this.catListArray.removeClass('active');
-					}
-					$(li).addClass('active');
+					// if(this.catListArray.hasClass('active')){
+					// 	this.catListArray.removeClass('active');
+					// }
+					// $(li).addClass('active');
 				};
 			})(cat));
 			$(li).appendTo(viewCatList.catList);
@@ -104,6 +123,42 @@ var viewCat = {
 	renderCounterOnly: function(){
 		var cat = octopus.getCurrentCat();
 		this.numClicks.html('Number of clicks = ' + cat.clicks);
+	}
+};
+
+var viewAdmin = {
+	init: function() {
+		this.adminView = $('.adminView');
+		this.adminBtn = $('.adminBtn');
+		this.cancelBtn = $('.cancelBtn');
+		this.saveBtn = $('.saveBtn');
+		this.form = $('input');
+		this.formName = $('#formName');
+		this.formImgURL = $('#formImgURL');
+		this.formClicks = $('#formClicks');
+		this.adminView.hide();
+		this.adminBtn.click(function() {
+			if(!octopus.isAdmin()){
+				octopus.setAdmin(true);
+				viewAdmin.render();
+				viewAdmin.adminView.show();
+			}
+		});
+		this.cancelBtn.click(function(e) {
+			e.preventDefault();
+			octopus.setAdmin(false);
+			viewAdmin.adminView.hide();
+		});
+		this.saveBtn.click(function(e) {
+			e.preventDefault();
+			octopus.updateCat(viewAdmin.form.serializeArray());
+		});
+		this.render();
+	},
+	render: function() {
+		this.formName.val(octopus.getCurrentCat().name);
+		this.formImgURL.val(octopus.getCurrentCat().img);
+		this.formClicks.val(octopus.getCurrentCat().clicks);
 	}
 };
 
